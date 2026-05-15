@@ -1,0 +1,11 @@
+[
+  {
+    "id": "1777710997329",
+    "email": "test@example.com",
+    "password": "password123",
+    "name": "Test User",
+    "domain": "frontend",
+    "onboarded": true,
+    "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Test User"
+  }
+]
