@@ -1,5 +1,5 @@
 import express from 'express';
-import { createTeam, getTeams, requestToJoin, handleRequest, sendTeamMessage, getTeamMessages, removeMember, inviteUser, handleInvitation, getMySentRequests, getIncomingRequests, getSentInvites } from '../controllers/teamController.js';
+import { createTeam, getTeams, requestToJoin, handleRequest, sendTeamMessage, getTeamMessages, removeMember, inviteUser, handleInvitation, getMySentRequests, getIncomingRequests, getSentInvites, deleteTeam } from '../controllers/teamController.js';
 
 import authMiddleware from '../middleware/authMiddleware.js';
 
@@ -18,5 +18,8 @@ router.get('/requests/incoming', authMiddleware, getIncomingRequests);
 
 // Member management
 router.delete('/:teamId/members/:memberId', authMiddleware, removeMember);
+
+// Team management
+router.delete('/:teamId', authMiddleware, deleteTeam);
 
 export default router;

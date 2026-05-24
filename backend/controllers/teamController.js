@@ -320,3 +320,28 @@ export const getSentInvites = async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch sent invites' });
   }
 };
+
+export const deleteTeam = async (req, res) => {
+  try {
+    const { teamId } = req.params;
+    const team = await Team.findById(teamId);
+
+    if (!team) return res.status(404).json({ error: 'Team not found' });
+    if (team.creator.toString() !== req.userId) {
+      return res.status(403).json({ error: 'Only the team creator/leader can delete the team' });
+    }
+
+    await Team.findByIdAndDelete(teamId);
+
+    // Emit event via socket
+    const io = req.app.get('io');
+    if (io) {
+      io.to(`team_${teamId}`).emit('team_deleted', { teamId });
+    }
+
+    res.json({ message: 'Team deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to delete team' });
+  }
+};
+

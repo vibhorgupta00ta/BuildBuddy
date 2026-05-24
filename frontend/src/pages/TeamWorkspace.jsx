@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, Send, ArrowLeft, Shield, Check, User, Code, Star, Zap, Terminal, UserMinus, Paperclip, FileText, Image as ImageIcon, X } from 'lucide-react';
+import { Users, Send, ArrowLeft, Shield, Check, User, Code, Star, Zap, Terminal, UserMinus, Paperclip, FileText, Image as ImageIcon, X, Trash2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { io } from 'socket.io-client';
 import Toast from '../components/Toast';
@@ -91,6 +91,13 @@ const TeamWorkspace = () => {
       }
     });
 
+    socketRef.current.on('team_deleted', ({ teamId: deletedId }) => {
+      if (deletedId === teamId) {
+        setNotification({ message: 'This team has been deleted by the leader.', type: 'info' });
+        setTimeout(() => navigate('/teams'), 3000);
+      }
+    });
+
     return () => {
       if (socketRef.current) {
         socketRef.current.disconnect();
@@ -119,6 +126,23 @@ const TeamWorkspace = () => {
       // State will be updated via socket event
     } catch (error) {
       setNotification({ message: error.response?.data?.error || 'Failed to remove member', type: 'error' });
+    }
+  };
+
+  const handleDeleteTeam = async () => {
+    if (user?.id !== team.creator._id) {
+      setNotification({ message: 'Only the team leader can delete this team.', type: 'error' });
+      return;
+    }
+
+    if (!window.confirm('WARNING: Are you sure you want to permanently delete this team? This action cannot be undone.')) return;
+
+    try {
+      await axios.delete(`${API_URL}/teams/${teamId}`);
+      setNotification({ message: 'Team deleted successfully!', type: 'success' });
+      setTimeout(() => navigate('/teams'), 1500);
+    } catch (error) {
+      setNotification({ message: error.response?.data?.error || 'Failed to delete team', type: 'error' });
     }
   };
 
@@ -240,6 +264,14 @@ const TeamWorkspace = () => {
               <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
                 <div className="h-full bg-brand-accent w-[94%]" />
               </div>
+              {user?.id === team.creator._id && (
+                <button 
+                  onClick={handleDeleteTeam}
+                  className="w-full mt-4 py-2.5 bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white rounded-xl transition-all font-bold border border-red-500/20 text-xs flex items-center justify-center gap-2"
+                >
+                  <Trash2 className="w-4 h-4" /> Delete Team
+                </button>
+              )}
             </div>
           </div>
         </motion.div>
