@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { io } from 'socket.io-client';
+import { BASE_URL, API_URL } from '../config';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, User, MessageCircle, Plus, Check, X, Shield, Users, Paperclip, FileText, Image as ImageIcon, Search } from 'lucide-react';
 import Toast from '../components/Toast';
@@ -42,7 +43,7 @@ const Messages = () => {
   useEffect(() => {
     if (!user) return;
     
-    const newSocket = io('http://localhost:5000');
+    const newSocket = io(BASE_URL);
     
     newSocket.on('connect', () => {
       newSocket.emit('join_user', user.id || user._id);
@@ -59,7 +60,7 @@ const Messages = () => {
         // If it's from the other person, mark as read instantly
         if (msg.sender === userId) {
           try {
-            await axios.post(`http://localhost:5000/api/messages/${userId}/read`);
+            await axios.post(`${API_URL}/messages/${userId}/read`);
             window.dispatchEvent(new Event('messages_read'));
           } catch (e) {
             console.error(e);
@@ -80,7 +81,7 @@ const Messages = () => {
   // Fetch Conversations Sidebar
   const fetchConversations = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/messages/conversations');
+      const res = await axios.get(`${API_URL}/messages/conversations`);
       setConversations(res.data);
     } catch (err) {
       console.error(err);
@@ -101,25 +102,25 @@ const Messages = () => {
     const fetchChatData = async () => {
       setLoading(true);
       try {
-        const res = await axios.get(`http://localhost:5000/api/messages/${userId}`);
+        const res = await axios.get(`${API_URL}/messages/${userId}`);
         setMessages(res.data.messages || []);
         
         // Find other user details from conversations list, or fetch if new
         let other = conversations.find(c => c.otherUser._id === userId)?.otherUser;
         if (!other) {
-          const userRes = await axios.get(`http://localhost:5000/api/users`);
+          const userRes = await axios.get(`${API_URL}/users`);
           other = userRes.data.find(u => u._id === userId);
         }
         setSelectedUser(other);
 
         // Fetch teams for action menu
-        const teamsRes = await axios.get('http://localhost:5000/api/teams');
+        const teamsRes = await axios.get(`${API_URL}/teams`);
         const myUserId = user.id || user._id;
         setMyTeams(teamsRes.data.filter(t => (t.creator?._id || t.creator) === myUserId));
         setTheirTeams(teamsRes.data.filter(t => (t.creator?._id || t.creator) === userId));
 
         // Mark as read when opened
-        await axios.post(`http://localhost:5000/api/messages/${userId}/read`);
+        await axios.post(`${API_URL}/messages/${userId}/read`);
         // Refresh conversations to clear badge locally
         fetchConversations();
         // Tell the Navbar to update its global count instantly
@@ -153,14 +154,14 @@ const Messages = () => {
         const formData = new FormData();
         formData.append('file', selectedFile);
         
-        const uploadRes = await axios.post('http://localhost:5000/api/upload', formData, {
+        const uploadRes = await axios.post(`${API_URL}/upload`, formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
         
         fileData = uploadRes.data;
       }
 
-      const res = await axios.post(`http://localhost:5000/api/messages/${userId}`, {
+      const res = await axios.post(`${API_URL}/messages/${userId}`, {
         text: type === 'text' ? newMessage : 
               type === 'invite' ? 'I would like to invite you to join my team.' : 
               'I would like to request to join your team.',
@@ -181,7 +182,7 @@ const Messages = () => {
 
   const handleActionResponse = async (messageId, status) => {
     try {
-      await axios.post('http://localhost:5000/api/messages/action', {
+      await axios.post(`${API_URL}/messages/action`, {
         messageId,
         status
       });

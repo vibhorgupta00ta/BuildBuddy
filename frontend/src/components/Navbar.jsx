@@ -4,6 +4,7 @@ import { Search, Users, User, Zap, LogOut, PlusSquare, LayoutDashboard, Bell, Me
 import { useAuth } from '../context/AuthContext';
 import { motion } from 'framer-motion';
 import axios from 'axios';
+import { API_URL } from '../config';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -16,10 +17,10 @@ const Navbar = () => {
     const fetchCounts = async () => {
       if (!user) return;
       try {
-        const msgRes = await axios.get('http://localhost:5000/api/messages/unread-count');
+        const msgRes = await axios.get(`${API_URL}/messages/unread-count`);
         setUnreadMessages(msgRes.data.count);
 
-        const reqRes = await axios.get('http://localhost:5000/api/teams/requests/incoming');
+        const reqRes = await axios.get(`${API_URL}/teams/requests/incoming`);
         setPendingRequests(reqRes.data.length);
       } catch (err) {
         // Silently fail

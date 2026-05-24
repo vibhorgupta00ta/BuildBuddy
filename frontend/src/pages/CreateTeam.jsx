@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import Toast from '../components/Toast';
+import { API_URL } from '../config';
 
 const CreateTeam = () => {
   const { user } = useAuth();
@@ -40,7 +41,7 @@ const CreateTeam = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      await axios.post('http://localhost:5000/api/teams', { 
+      await axios.post(`${API_URL}/teams`, { 
         name, 
         description, 
         requiredRoles,

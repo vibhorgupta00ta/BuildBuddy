@@ -4,6 +4,9 @@ import { FaGithub, FaLinkedin } from 'react-icons/fa';
 const Footer = () => {
   return (
     <footer className="relative mt-16 border-t border-white/10 overflow-hidden">
+      {/* Gradient Divider */}
+      <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-cyan-500 to-transparent opacity-50" />
+
       {/* Background with Glassmorphism and slight tint */}
       <div className="absolute inset-0 bg-[#020617]/60 backdrop-blur-xl z-0" />
       
@@ -16,7 +19,7 @@ const Footer = () => {
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 py-8">
         {/* Bottom Section Only */}
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="pt-6 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="text-[#94A3B8] text-xs">
             © 2026 BuildBuddy. All rights reserved.
           </div>

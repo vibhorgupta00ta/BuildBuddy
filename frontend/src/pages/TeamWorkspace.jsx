@@ -6,6 +6,7 @@ import { Users, Send, ArrowLeft, Shield, Check, User, Code, Star, Zap, Terminal,
 import { useAuth } from '../context/AuthContext';
 import { io } from 'socket.io-client';
 import Toast from '../components/Toast';
+import { BASE_URL, API_URL } from '../config';
 
 const TeamWorkspace = () => {
   const { teamId } = useParams();
@@ -28,7 +29,7 @@ const TeamWorkspace = () => {
 
   const fetchTeamData = async () => {
     try {
-      const teamRes = await axios.get('http://localhost:5000/api/teams');
+      const teamRes = await axios.get(`${API_URL}/teams`);
       const currentTeam = teamRes.data.find(t => t._id === teamId);
       
       if (!currentTeam) {
@@ -46,7 +47,7 @@ const TeamWorkspace = () => {
 
       setTeam(currentTeam);
       
-      const msgRes = await axios.get(`http://localhost:5000/api/teams/${teamId}/chat`);
+      const msgRes = await axios.get(`${API_URL}/teams/${teamId}/chat`);
       setMessages(msgRes.data);
     } catch (error) {
       console.error('Error fetching team data:', error);
@@ -59,7 +60,7 @@ const TeamWorkspace = () => {
     fetchTeamData();
 
     // Initialize Socket
-    socketRef.current = io('http://localhost:5000');
+    socketRef.current = io(BASE_URL);
     
     socketRef.current.emit('join_team', teamId);
 
@@ -113,7 +114,7 @@ const TeamWorkspace = () => {
     if (!window.confirm('Are you sure you want to remove this member?')) return;
     
     try {
-      await axios.delete(`http://localhost:5000/api/teams/${teamId}/members/${memberId}`);
+      await axios.delete(`${API_URL}/teams/${teamId}/members/${memberId}`);
       setNotification({ message: 'Member removed successfully', type: 'success' });
       // State will be updated via socket event
     } catch (error) {
@@ -140,14 +141,14 @@ const TeamWorkspace = () => {
         const formData = new FormData();
         formData.append('file', selectedFile);
         
-        const uploadRes = await axios.post('http://localhost:5000/api/upload', formData, {
+        const uploadRes = await axios.post(`${API_URL}/upload`, formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
         
         fileData = uploadRes.data;
       }
 
-      const res = await axios.post(`http://localhost:5000/api/teams/${teamId}/chat`, {
+      const res = await axios.post(`${API_URL}/teams/${teamId}/chat`, {
         text: newMessage,
         ...fileData
       });

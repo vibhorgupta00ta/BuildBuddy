@@ -1,9 +1,9 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
-const AuthContext = createContext();
+import { API_URL } from '../config';
 
-const API_URL = 'http://localhost:5000/api';
+const AuthContext = createContext();
 
 // Configure axios to include token
 axios.interceptors.request.use(

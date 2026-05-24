@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Zap, Rocket, Users, Target } from 'lucide-react';
+import { ArrowRight, Zap, Rocket, Users, Target } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const Home = () => {
@@ -46,6 +46,7 @@ const Home = () => {
         >
           <Link to="/discover" className="btn-primary group">
             Start Discovering 
+            <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
           </Link>
           <Link to="/teams" className="btn-secondary group">
             <Users className="w-5 h-5 mr-2 group-hover:text-brand-accent transition-colors" />
@@ -53,7 +54,30 @@ const Home = () => {
           </Link>
         </motion.div>
 
-
+        {/* Stats Section */}
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5, duration: 1 }}
+          className="mt-24 grid grid-cols-2 md:grid-cols-4 gap-12 border-t border-white/5 pt-12"
+        >
+          <div>
+            <div className="text-4xl font-bold text-white mb-1">10k+</div>
+            <div className="text-sm text-slate-500 uppercase tracking-widest font-bold">Hackers</div>
+          </div>
+          <div>
+            <div className="text-4xl font-bold text-white mb-1">2.5k</div>
+            <div className="text-sm text-slate-500 uppercase tracking-widest font-bold">Teams Built</div>
+          </div>
+          <div>
+            <div className="text-4xl font-bold text-white mb-1">150+</div>
+            <div className="text-sm text-slate-500 uppercase tracking-widest font-bold">Events</div>
+          </div>
+          <div>
+            <div className="text-4xl font-bold text-white mb-1">500+</div>
+            <div className="text-sm text-slate-500 uppercase tracking-widest font-bold">Projects</div>
+          </div>
+        </motion.div>
       </section>
 
       {/* Features Section */}

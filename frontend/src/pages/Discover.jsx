@@ -6,6 +6,7 @@ import { RefreshCw, Zap, Filter, Loader2, Search, Send, Rocket } from 'lucide-re
 import axios from 'axios';
 import Toast from '../components/Toast';
 import { useAuth } from '../context/AuthContext';
+import { API_URL } from '../config';
 
 
 const DOMAINS = [
@@ -48,7 +49,7 @@ const Discover = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/users');
+        const response = await axios.get(`${API_URL}/users`);
         // Filter out current user
         setUsers(response.data.filter(u => u._id !== currentUser?.id));
       } catch (error) {
@@ -62,7 +63,7 @@ const Discover = () => {
     const fetchMyTeams = async () => {
       if (currentUser) {
         try {
-          const res = await axios.get('http://localhost:5000/api/teams');
+          const res = await axios.get(`${API_URL}/teams`);
           const leading = res.data.filter(t => t.creator?._id === currentUser.id);
           setMyTeams(leading);
           if (leading.length > 0) setSelectedTeamId(leading[0]._id);

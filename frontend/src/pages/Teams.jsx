@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { API_URL } from '../config';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Users, Search, Rocket, Check, X, MessageSquare, Shield, Zap } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -20,7 +21,7 @@ const Teams = () => {
 
   const fetchMessages = async (teamId) => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/teams/${teamId}/chat`);
+      const response = await axios.get(`${API_URL}/teams/${teamId}/chat`);
       setMessages(response.data);
     } catch (error) {
       console.error('Error fetching messages:', error);
@@ -31,7 +32,7 @@ const Teams = () => {
     if (!newMessage.trim() || isSending) return;
     setIsSending(true);
     try {
-      const response = await axios.post(`http://localhost:5000/api/teams/${teamId}/chat`, {
+      const response = await axios.post(`${API_URL}/teams/${teamId}/chat`, {
         text: newMessage
       });
       setMessages([...messages, response.data]);
@@ -54,7 +55,7 @@ const Teams = () => {
 
   const fetchTeams = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/teams');
+      const response = await axios.get(`${API_URL}/teams`);
       setTeams(response.data);
     } catch (error) {
       console.error('Error fetching teams:', error);
@@ -65,7 +66,7 @@ const Teams = () => {
 
   const handleRequestJoin = async (teamId) => {
     try {
-      await axios.post(`http://localhost:5000/api/teams/${teamId}/request`, { message: 'I would like to join your team!' });
+      await axios.post(`${API_URL}/teams/${teamId}/request`, { message: 'I would like to join your team!' });
       setNotification({ message: 'Join request sent!', type: 'success' });
       fetchTeams();
     } catch (error) {

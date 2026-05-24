@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
+import { API_URL } from '../config';
 import { motion } from 'framer-motion';
 import { Camera, Terminal, Briefcase, Mail, User as UserIcon, Code2, Shield, Plus, X, Layout, Database, Palette, Cpu, ShieldCheck, Save, Loader2, Globe, Binary, Brain, Box, Cloud, Settings, Monitor, Rocket, MessageCircle, ExternalLink, Smartphone, Gamepad2, Glasses } from 'lucide-react';
 
@@ -80,7 +81,7 @@ const Profile = () => {
       } else {
         setIsOwnProfile(false);
         try {
-          const res = await axios.get(`http://localhost:5000/api/users/profile/${effectiveUserId}`);
+          const res = await axios.get(`${API_URL}/users/profile/${effectiveUserId}`);
           setProfileUser(res.data);
           setFormData({
             name: res.data.name || '',

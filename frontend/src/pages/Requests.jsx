@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { API_URL } from '../config';
 import { Users, Check, X, Bell, ExternalLink } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import Toast from '../components/Toast';
@@ -12,7 +13,7 @@ const Requests = () => {
 
   const fetchIncomingRequests = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/teams/requests/incoming');
+      const response = await axios.get(`${API_URL}/teams/requests/incoming`);
       setIncomingRequests(response.data);
     } catch (error) {
       console.error('Error fetching incoming requests:', error);
@@ -31,7 +32,7 @@ const Requests = () => {
 
   const handleAcceptRejectRequest = async (teamId, requestId, status) => {
     try {
-      await axios.put(`http://localhost:5000/api/teams/${teamId}/request`, { requestId, status });
+      await axios.put(`${API_URL}/teams/${teamId}/request`, { requestId, status });
       setNotification({ message: `Request ${status} successfully!`, type: 'success' });
       fetchIncomingRequests();
     } catch (error) {
